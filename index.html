@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixel Glass SaaS V5</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+height:100vh;
+overflow:hidden;
+font-family:Inter,system-ui,sans-serif;
+background:#f7f8fb;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+/* animated grid */
+
+body::before{
+content:"";
+position:fixed;
+inset:0;
+
+background:
+linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px),
+linear-gradient(90deg,rgba(0,0,0,.025) 1px,transparent 1px);
+
+background-size:120px 120px;
+
+animation:gridMove 25s linear infinite;
+}
+
+@keyframes gridMove{
+
+from{
+transform:translateY(0);
+}
+
+to{
+transform:translateY(120px);
+}
+
+}
+
+.app{
+
+width:1280px;
+height:780px;
+
+padding:18px;
+
+border-radius:34px;
+
+background:
+rgba(255,255,255,.45);
+
+backdrop-filter:blur(26px);
+
+box-shadow:
+0 40px 100px rgba(0,0,0,.08);
+
+overflow:hidden;
+position:relative;
+}
+
+/* dashboard */
+
+#dashboard{
+
+height:100%;
+
+display:grid;
+
+grid-template-columns:
+2fr 1fr 1fr 1.4fr;
+
+grid-template-rows:
+1.2fr 1fr 1fr 1.2fr;
+
+gap:14px;
+
+transition:.45s;
+}
+
+.tile{
+
+position:relative;
+
+overflow:hidden;
+
+cursor:pointer;
+
+border-radius:22px;
+
+background:
+rgba(255,255,255,.55);
+
+backdrop-filter:blur(16px);
+
+border:
+1px solid rgba(255,255,255,.95);
+
+box-shadow:
+0 10px 25px rgba(0,0,0,.04);
+
+transition:.28s ease;
+}
+
+.tile:hover{
+
+transform:
+translateY(-4px)
+scale(1.01);
+
+box-shadow:
+0 20px 40px rgba(0,0,0,.08);
+
+}
+
+.large{
+grid-column:span 2;
+grid-row:span 2;
+}
+
+.wide{
+grid-column:span 2;
+}
+
+.tall{
+grid-row:span 2;
+}
+
+.label{
+
+position:absolute;
+
+left:18px;
+bottom:16px;
+
+font-size:13px;
+font-weight:700;
+
+letter-spacing:1.5px;
+
+color:#334155;
+}
+
+/* pixel icon */
+
+.icon{
+
+position:absolute;
+
+top:50%;
+left:50%;
+
+transform:
+translate(-50%,-50%);
+
+display:grid;
+
+grid-template-columns:
+repeat(5,6px);
+
+grid-template-rows:
+repeat(5,6px);
+
+gap:4px;
+}
+
+.dot{
+
+width:6px;
+height:6px;
+
+border-radius:2px;
+
+background:#94a3b8;
+
+opacity:.08;
+
+transition:.25s;
+}
+
+.dot.on{
+
+background:#dbeafe;
+
+opacity:.95;
+
+box-shadow:
+0 0 8px rgba(143,184,255,.55),
+0 0 18px rgba(143,184,255,.25);
+
+animation:twinkle 4s infinite;
+}
+
+.tile:hover .dot.on{
+
+transform:scale(1.06);
+
+opacity:1;
+
+box-shadow:
+0 0 12px rgba(143,184,255,.8),
+0 0 25px rgba(143,184,255,.35);
+}
+
+@keyframes twinkle{
+
+0%,100%{
+opacity:.5;
+}
+
+50%{
+opacity:1;
+}
+
+}
+
+.tile::before{
+
+content:"";
+
+position:absolute;
+inset:0;
+
+background:
+radial-gradient(
+circle at 25% 20%,
+rgba(255,255,255,.8),
+transparent 50%
+);
+
+pointer-events:none;
+}
+
+/* detail pages */
+
+.detail{
+
+position:absolute;
+
+inset:18px;
+
+display:none;
+
+padding:34px;
+
+border-radius:24px;
+
+background:
+rgba(255,255,255,.72);
+
+backdrop-filter:blur(22px);
+
+animation:fade .35s ease;
+}
+
+.detail.show{
+display:block;
+}
+
+@keyframes fade{
+
+from{
+opacity:0;
+transform:translateY(10px);
+}
+
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+.backBtn{
+
+display:inline-flex;
+
+align-items:center;
+
+gap:8px;
+
+padding:10px 16px;
+
+border-radius:12px;
+
+border:none;
+
+cursor:pointer;
+
+background:white;
+
+box-shadow:
+0 8px 18px rgba(0,0,0,.06);
+}
+
+.projectTitle{
+
+margin-top:24px;
+
+font-size:38px;
+
+font-weight:800;
+
+color:#0f172a;
+}
+
+.projectSubtitle{
+
+margin-top:10px;
+
+color:#64748b;
+}
+
+.cards{
+
+margin-top:32px;
+
+display:grid;
+
+grid-template-columns:
+repeat(4,1fr);
+
+gap:16px;
+}
+
+.card{
+
+padding:22px;
+
+border-radius:18px;
+
+background:
+rgba(255,255,255,.85);
+
+border:
+1px solid rgba(255,255,255,.95);
+
+box-shadow:
+0 10px 25px rgba(0,0,0,.04);
+}
+
+.cardLabel{
+
+font-size:12px;
+
+letter-spacing:1px;
+
+color:#64748b;
+}
+
+.cardValue{
+
+margin-top:10px;
+
+font-size:32px;
+
+font-weight:700;
+
+color:#0f172a;
+}
+
+.feed{
+
+margin-top:24px;
+
+padding:24px;
+
+border-radius:20px;
+
+background:white;
+
+height:280px;
+
+overflow:auto;
+}
+
+.feedItem{
+
+display:flex;
+
+justify-content:space-between;
+
+padding:14px 0;
+
+border-bottom:
+1px solid #eef2f7;
+}
+
+.feedItem:last-child{
+border:none;
+}
+
+.time{
+color:#94a3b8;
+}
+
+</style>
+</head>
+<body>
+
+<div class="app">
+
+<div id="dashboard">
+
+<div class="tile large" onclick="openProject('AIR')">
+<div class="icon"></div>
+<div class="label">AIR</div>
+</div>
+
+<div class="tile" onclick="openProject('CPU')">
+<div class="icon"></div>
+<div class="label">CPU</div>
+</div>
+
+<div class="tile tall" onclick="openProject('AI')">
+<div class="icon"></div>
+<div class="label">AI</div>
+</div>
+
+<div class="tile" onclick="openProject('RAM')">
+<div class="icon"></div>
+<div class="label">RAM</div>
+</div>
+
+<div class="tile" onclick="openProject('AUTH')">
+<div class="icon"></div>
+<div class="label">AUTH</div>
+</div>
+
+<div class="tile wide" onclick="openProject('GRID')">
+<div class="icon"></div>
+<div class="label">GRID</div>
+</div>
+
+<div class="tile" onclick="openProject('SYNC')">
+<div class="icon"></div>
+<div class="label">SYNC</div>
+</div>
+
+<div class="tile" onclick="openProject('API')">
+<div class="icon"></div>
+<div class="label">API</div>
+</div>
+
+<div class="tile wide" onclick="openProject('STORAGE')">
+<div class="icon"></div>
+<div class="label">STORAGE</div>
+</div>
+
+<div class="tile" onclick="openProject('WIFI')">
+<div class="icon"></div>
+<div class="label">WIFI</div>
+</div>
+
+</div>
+
+<!-- AIR -->
+
+<div id="AIR" class="detail">
+
+<button class="backBtn" onclick="closeProject()">
+← Dashboard
+</button>
+
+<div class="projectTitle">
+AIR SYSTEM
+</div>
+
+<div class="projectSubtitle">
+Environmental Intelligence Platform
+</div>
+
+<div class="cards">
+
+<div class="card">
+<div class="cardLabel">ONLINE</div>
+<div class="cardValue">98.4%</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">NODES</div>
+<div class="cardValue">12</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">ACTIVE</div>
+<div class="cardValue">03</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">ALERTS</div>
+<div class="cardValue">01</div>
+</div>
+
+</div>
+
+<div class="feed">
+
+<div class="feedItem">
+<span>Sensor Calibration Complete</span>
+<span class="time">09:21</span>
+</div>
+
+<div class="feedItem">
+<span>Node 03 Synced</span>
+<span class="time">09:34</span>
+</div>
+
+<div class="feedItem">
+<span>Pressure Check Complete</span>
+<span class="time">09:48</span>
+</div>
+
+<div class="feedItem">
+<span>Airflow Analysis Updated</span>
+<span class="time">10:11</span>
+</div>
+
+</div>
+
+</div>
+
+<!-- AI -->
+
+<div id="AI" class="detail">
+
+<button class="backBtn" onclick="closeProject()">
+← Dashboard
+</button>
+
+<div class="projectTitle">
+AI ENGINE
+</div>
+
+<div class="projectSubtitle">
+Adaptive Intelligence Core
+</div>
+
+<div class="cards">
+
+<div class="card">
+<div class="cardLabel">MODELS</div>
+<div class="cardValue">24</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">ACCURACY</div>
+<div class="cardValue">96%</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">REQUESTS</div>
+<div class="cardValue">18K</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">GPU</div>
+<div class="cardValue">71%</div>
+</div>
+
+</div>
+
+<div class="feed">
+
+<div class="feedItem">
+<span>Training Batch Completed</span>
+<span class="time">08:41</span>
+</div>
+
+<div class="feedItem">
+<span>Inference Queue Updated</span>
+<span class="time">09:05</span>
+</div>
+
+<div class="feedItem">
+<span>Embedding Cache Refreshed</span>
+<span class="time">09:47</span>
+</div>
+
+</div>
+
+</div>
+
+<div id="CPU" class="detail">
+
+<button class="backBtn" onclick="closeProject()">← Dashboard</button>
+
+<div class="projectTitle">CPU MONITOR</div>
+
+<div class="projectSubtitle">
+Processing Infrastructure
+</div>
+
+<div class="cards">
+
+<div class="card">
+<div class="cardLabel">LOAD</div>
+<div class="cardValue">62%</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">CORES</div>
+<div class="cardValue">32</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">THREADS</div>
+<div class="cardValue">64</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">TEMP</div>
+<div class="cardValue">57°</div>
+</div>
+
+</div>
+
+<div class="feed">
+
+<div class="feedItem">
+<span>Resource Allocation Updated</span>
+<span class="time">10:01</span>
+</div>
+
+<div class="feedItem">
+<span>Thermal Check Passed</span>
+<span class="time">10:13</span>
+</div>
+
+</div>
+
+</div>
+
+<div id="STORAGE" class="detail">
+
+<button class="backBtn" onclick="closeProject()">← Dashboard</button>
+
+<div class="projectTitle">
+STORAGE HUB
+</div>
+
+<div class="projectSubtitle">
+Data Persistence Layer
+</div>
+
+<div class="cards">
+
+<div class="card">
+<div class="cardLabel">USED</div>
+<div class="cardValue">72TB</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">FREE</div>
+<div class="cardValue">28TB</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">BACKUPS</div>
+<div class="cardValue">114</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">HEALTH</div>
+<div class="cardValue">99%</div>
+</div>
+
+</div>
+
+<div class="feed">
+
+<div class="feedItem">
+<span>Backup Completed</span>
+<span class="time">07:55</span>
+</div>
+
+<div class="feedItem">
+<span>Archive Synced</span>
+<span class="time">09:10</span>
+</div>
+
+</div>
+
+</div>
+
+<div id="AUTH" class="detail">
+
+<button class="backBtn" onclick="closeProject()">← Dashboard</button>
+
+<div class="projectTitle">
+AUTH SYSTEM
+</div>
+
+<div class="projectSubtitle">
+Identity & Security Layer
+</div>
+
+<div class="cards">
+
+<div class="card">
+<div class="cardLabel">USERS</div>
+<div class="cardValue">248</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">SESSIONS</div>
+<div class="cardValue">71</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">ROLES</div>
+<div class="cardValue">12</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">RISKS</div>
+<div class="cardValue">00</div>
+</div>
+
+</div>
+
+</div>
+
+<div id="GRID" class="detail">
+
+<button class="backBtn" onclick="closeProject()">← Dashboard</button>
+
+<div class="projectTitle">
+GRID SYSTEM
+</div>
+
+<div class="projectSubtitle">
+Spatial Infrastructure Network
+</div>
+
+<div class="cards">
+
+<div class="card">
+<div class="cardLabel">CELLS</div>
+<div class="cardValue">420</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">ACTIVE</div>
+<div class="cardValue">381</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">STATUS</div>
+<div class="cardValue">OK</div>
+</div>
+
+<div class="card">
+<div class="cardLabel">LOAD</div>
+<div class="cardValue">84%</div>
+</div>
+
+</div>
+
+</div>
+
+<div id="SYNC" class="detail">
+<button class="backBtn" onclick="closeProject()">← Dashboard</button>
+<div class="projectTitle">SYNC CENTER</div>
+<div class="projectSubtitle">Realtime Synchronization</div>
+</div>
+
+<div id="API" class="detail">
+<button class="backBtn" onclick="closeProject()">← Dashboard</button>
+<div class="projectTitle">API GATEWAY</div>
+<div class="projectSubtitle">External Integrations</div>
+</div>
+
+<div id="RAM" class="detail">
+<button class="backBtn" onclick="closeProject()">← Dashboard</button>
+<div class="projectTitle">RAM MEMORY</div>
+<div class="projectSubtitle">Live Memory Analytics</div>
+</div>
+
+<div id="WIFI" class="detail">
+<button class="backBtn" onclick="closeProject()">← Dashboard</button>
+<div class="projectTitle">WIFI NETWORK</div>
+<div class="projectSubtitle">Connectivity Dashboard</div>
+</div>
+
+
+</div>
+
+<script>
+
+const dashboard =
+document.getElementById("dashboard");
+
+document
+.querySelectorAll(".icon")
+.forEach(icon=>{
+
+let html='';
+
+for(let i=0;i<25;i++){
+
+html+=`
+<div class="dot ${
+Math.random()>.55?'on':''
+}"></div>
+`;
+
+}
+
+icon.innerHTML=html;
+
+});
+
+function openProject(id){
+
+dashboard.style.opacity="0";
+dashboard.style.pointerEvents="none";
+
+setTimeout(()=>{
+
+dashboard.style.display="none";
+
+document
+.getElementById(id)
+.classList.add("show");
+
+},250);
+
+}
+
+function closeProject(){
+
+document
+.querySelectorAll(".detail")
+.forEach(page=>{
+
+page.classList.remove("show");
+
+});
+
+dashboard.style.display="grid";
+
+setTimeout(()=>{
+
+dashboard.style.opacity="1";
+
+dashboard.style.pointerEvents="auto";
+
+},10);
+
+}
+
+</script>
+
+</body>
+</html>
